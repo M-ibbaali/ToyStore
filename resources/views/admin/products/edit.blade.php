@@ -3,7 +3,7 @@
 @section('title', 'Edit Product')
 
 @section('content')
-<h1 class="text-3xl font-bold text-beauty-text mb-6">Edit Product</h1>
+<h1 class="text-3xl font-bold text-toys-text mb-6">Edit Product</h1>
 
 @if($errors->any())
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -24,7 +24,11 @@
             @php
                 $imagePath = str_starts_with($image->image, 'http') ? $image->image : asset('storage/' . $image->image);
             @endphp
-            <img src="{{ $imagePath }}" alt="Product Image" class="w-full h-full object-cover">
+            <img src="{{ $imagePath }}" alt="Product Image" class="w-full h-full object-cover rounded-lg">
+            
+            @if($image->is_primary)
+                <div class="absolute top-1 left-1 bg-yellow-400 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold shadow-sm">Primary</div>
+            @endif
             
             <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <form action="{{ route('admin.products.image.delete', $image->id) }}" method="POST">
@@ -52,12 +56,12 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
             <input type="text" name="name" value="{{ old('name', $product->name) }}" required 
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn focus:border-transparent outline-none">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn focus:border-transparent outline-none">
         </div>
         
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-            <select name="category_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none">
+            <select name="category_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none">
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
@@ -66,21 +70,36 @@
             </select>
         </div>
         
+        
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Price *</label>
-            <input type="number" name="price" value="{{ old('price', $product->price) }}" step="0.01" required 
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Selling Price *</label>
+            <div class="relative">
+
+                <input type="number" name="price" value="{{ old('price', $product->price) }}" step="0.01" required 
+                       class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none">
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Current selling price (after discount if applicable)</p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Original Price <span class="text-gray-400 font-normal">(Optional)</span></label>
+            <div class="relative">
+
+                <input type="number" name="original_price" value="{{ old('original_price', $product->original_price) }}" step="0.01" 
+                       class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none">
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Pre-discount price (leave empty if no discount)</p>
         </div>
         
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Stock *</label>
             <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" required 
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none">
         </div>
         
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-            <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none">
+            <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none">
                 <option value="active" {{ $product->status == 'active' ? 'selected' : '' }}>Active</option>
                 <option value="inactive" {{ $product->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
             </select>
@@ -89,14 +108,14 @@
         <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea name="description" rows="4" 
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none transition">{{ old('description', $product->description) }}</textarea>
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none transition">{{ old('description', $product->description) }}</textarea>
         </div>
         
         <!-- Image Upload Section -->
         <div class="md:col-span-1 border-t pt-4">
             <label class="block text-sm font-bold text-gray-800 mb-2">Upload New Images</label>
             <input type="file" name="images[]" multiple accept="image/*" 
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-beauty-btn file:text-white hover:file:bg-secondary">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-toys-btn file:text-white hover:file:bg-secondary">
             <p class="text-xs text-gray-500 mt-2">Max 2MB per image (jpeg, png, jpg, gif, webp)</p>
         </div>
 
@@ -115,7 +134,7 @@
                         <div class="group mb-4 border border-gray-100 rounded-lg p-3 bg-gray-50">
                             <div class="flex gap-2 mb-2">
                                 <input type="url" name="image_urls[]" value="{{ $image->image }}" placeholder="https://example.com/image.jpg" 
-                                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none"
+                                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none"
                                        oninput="handleUrlInput(this)">
                                 <button type="button" onclick="this.closest('.group').remove()" class="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition">&times;</button>
                             </div>
@@ -132,7 +151,7 @@
                     <div class="group mb-4 border border-gray-100 rounded-lg p-3 bg-gray-50">
                         <div class="flex gap-2 mb-2">
                             <input type="url" name="image_urls[]" placeholder="https://example.com/image.jpg" 
-                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none"
+                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none"
                                    oninput="handleUrlInput(this)">
                             <button type="button" onclick="addUrlField()" class="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition">+</button>
                         </div>
@@ -151,7 +170,7 @@
     </div>
     
     <div class="mt-8 flex gap-4 pt-6 border-t">
-        <button type="submit" class="px-6 py-2 bg-beauty-btn text-white rounded-lg hover:bg-secondary transition-all shadow-md active:scale-95">
+        <button type="submit" class="px-6 py-2 bg-toys-btn text-white rounded-lg hover:bg-secondary transition-all shadow-md active:scale-95">
             Update Product
         </button>
         <a href="{{ route('admin.products.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition active:scale-95">
@@ -168,7 +187,7 @@
         div.innerHTML = `
             <div class="flex gap-2 mb-2">
                 <input type="url" name="image_urls[]" placeholder="https://example.com/image.jpg" 
-                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-beauty-btn outline-none"
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-toys-btn outline-none"
                        oninput="handleUrlInput(this)">
                 <button type="button" onclick="this.closest('.group').remove()" class="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition">&times;</button>
             </div>

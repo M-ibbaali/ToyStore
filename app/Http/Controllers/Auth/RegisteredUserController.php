@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
         
         // Add success message
-        session()->flash('success', 'Registration successful! Welcome to Beauty House.');
+        session()->flash('success', 'Registration successful! Welcome to ToyStore.');
 
         return redirect(route('home', absolute: false));
     }

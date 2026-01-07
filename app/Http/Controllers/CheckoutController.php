@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Address;
+use App\Models\User;
+use App\Notifications\LowStockNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +29,9 @@ class CheckoutController extends Controller
         });
 
         $addresses = Address::where('user_id', Auth::id())->get();
+        $user = Auth::user();
 
-        return view('frontend.checkout', compact('cartItems', 'total', 'addresses'));
+        return view('frontend.checkout', compact('cartItems', 'total', 'addresses', 'user'));
     }
 
     public function process(Request $request)
@@ -73,7 +76,7 @@ class CheckoutController extends Controller
                 'payment_status' => $validated['payment_method'] == 'cod' ? 'pending' : 'pending',
             ]);
 
-            // Create order items
+            // Create order items & update stock
             foreach ($cart->items as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -81,6 +84,29 @@ class CheckoutController extends Controller
                     'price' => $item->product->price,
                     'quantity' => $item->quantity,
                 ]);
+
+                // Reduce stock
+                $product = $item->product;
+                $product->decrement('stock', $item->quantity);
+
+                // Low stock check
+                if ($product->stock <= 5) {
+                    $admins = User::where('role', 'admin')->get();
+                    
+                    // Check if a low stock notification was already sent recently
+                    $alreadyNotified = DB::table('notifications')
+                        ->where('notifiable_type', User::class)
+                        ->whereJsonContains('data->product_id', $product->id)
+                        ->whereJsonContains('data->type', 'low_stock')
+                        ->where('read_at', null)
+                        ->exists();
+
+                    if (!$alreadyNotified) {
+                        foreach ($admins as $admin) {
+                            $admin->notify(new LowStockNotification($product));
+                        }
+                    }
+                }
             }
 
             // Create payment record

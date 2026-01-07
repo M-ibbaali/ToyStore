@@ -1,28 +1,39 @@
 @extends('layouts.frontend')
 
-@section('title', 'My Profile')
+@section('title', 'Profile Settings - ToyStore')
 
 @section('content')
-
-    <div class="py-12 bg-gray-50/50">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow-lg rounded-2xl border border-pink-100">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow-lg rounded-2xl border border-pink-100">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow-lg rounded-2xl border border-pink-100">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+<x-dashboard-layout>
+    <!-- Header -->
+    <div class="mb-12">
+        <h1 class="text-4xl font-black text-toys-text tracking-tight mb-2 uppercase">Profile Settings</h1>
+        <p class="text-gray-500 font-bold uppercase text-xs tracking-widest">Manage your information and account security.</p>
     </div>
+
+    <div class="space-y-16">
+        <!-- Personal Information -->
+        <section class="relative">
+            <h2 class="text-xl font-black text-toys-text tracking-tight mb-8 uppercase border-l-4 border-primary pl-4">Personal Information</h2>
+            <div class="max-w-2xl">
+                @include('profile.partials.update-profile-information-form')
+            </div>
+        </section>
+
+        <!-- Security -->
+        <section class="relative">
+            <h2 class="text-xl font-black text-toys-text tracking-tight mb-8 uppercase border-l-4 border-secondary pl-4">Security & Password</h2>
+            <div class="max-w-2xl">
+                @include('profile.partials.update-password-form')
+            </div>
+        </section>
+
+        <!-- Danger Zone -->
+        <section class="pt-16 border-t border-gray-100">
+            <h2 class="text-xl font-black text-red-500 tracking-tight mb-8 uppercase border-l-4 border-red-500 pl-4">Danger Zone</h2>
+            <div class="max-w-2xl">
+                @include('profile.partials.delete-user-form')
+            </div>
+        </section>
+    </div>
+</x-dashboard-layout>
 @endsection

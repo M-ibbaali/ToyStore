@@ -21,5 +21,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share categories and cart count with frontend views
         view()->composer('layouts.frontend', \App\Http\View\Composers\FrontendComposer::class);
+
+        // Register Cart Merging Listener
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Login::class,
+            \App\Listeners\MergeCartAfterLogin::class
+        );
     }
 }

@@ -10,11 +10,15 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 
 // Admin Login Routes (Custom Path)
-Route::get('/beauty-house-admin', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/beauty-house-admin', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::get('/toystore-admin', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/toystore-admin', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 
@@ -23,18 +27,34 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/search/suggestions', [ShopController::class, 'suggestions'])->name('search.suggestions');
 Route::get('/product/{slug}', [ShopController::class, 'show'])->name('product.show');
+Route::post('/product/{id}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
+
+// Static Pages
+Route::get('/about', function () {
+    return view('frontend.about');
+})->name('about');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Cart Routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/cart/fetch-mini', [CartController::class, 'fetchMiniCart'])->name('cart.fetch-mini');
 
 // Checkout Routes (Auth Required)
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::get('/order/success/{orderId}', [CheckoutController::class, 'success'])->name('order.success');
+    // Favorites
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::get('/favorites/count', [FavoriteController::class, 'getFavoritesCount'])->name('favorites.count');
+    Route::get('/favorites/list', [FavoriteController::class, 'getFavoritesList'])->name('favorites.list');
+    Route::post('/favorites/toggle/{product}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.toggle');
+    Route::post('/favorites/clear', [FavoriteController::class, 'clearAll'])->name('favorites.clear');
 });
 
 
@@ -65,7 +85,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Dashboard & Management Routes (Protected)
-Route::middleware(['auth', 'admin'])->prefix('beauty-house-admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('toystore-admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
     // Categories
@@ -80,6 +100,17 @@ Route::middleware(['auth', 'admin'])->prefix('beauty-house-admin')->name('admin.
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
+
+    // Users
+    Route::resource('users', AdminUserController::class);
+
+    // Notifications
+    Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+    Route::delete('/notifications/clear-all', [AdminNotificationController::class, 'clearAll'])->name('notifications.clearAll');
+    Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    // Contact Messages
+    Route::resource('messages', \App\Http\Controllers\Admin\ContactMessageController::class)->only(['index', 'show', 'destroy']);
 });
 
 require __DIR__.'/auth.php';

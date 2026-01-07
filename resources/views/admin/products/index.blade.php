@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-beauty-text">Products</h1>
-    <a href="{{ route('admin.products.create') }}" class="px-6 py-2 bg-beauty-btn text-white rounded-lg hover:bg-secondary transition">
+    <h1 class="text-3xl font-bold text-toys-text">Products</h1>
+    <a href="{{ route('admin.products.create') }}" class="px-6 py-2 bg-toys-btn text-white rounded-lg hover:bg-secondary transition">
         Add New Product
     </a>
 </div>
@@ -33,19 +33,11 @@
             @forelse($products as $product)
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    @if($product->images->count() > 0)
-                        @php
-                            $image = $product->images->first()->image;
-                            $src = str_starts_with($image, 'http') ? $image : asset('storage/' . $image);
-                        @endphp
-                        <img src="{{ $src }}" alt="{{ $product->name }}" class="w-12 h-12 object-cover rounded">
-                    @else
-                        <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-xs">No Image</div>
-                    @endif
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-12 h-12 object-cover rounded shadow-sm border border-gray-100">
                 </td>
                 <td class="px-6 py-4">{{ $product->name }}</td>
                 <td class="px-6 py-4">{{ $product->category->name }}</td>
-                <td class="px-6 py-4">${{ number_format($product->price, 2) }}</td>
+                <td class="px-6 py-4">{{ formatPrice($product->price) }}</td>
                 <td class="px-6 py-4">{{ $product->stock }}</td>
                 <td class="px-6 py-4">
                     <span class="px-2 py-1 text-xs rounded {{ $product->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">

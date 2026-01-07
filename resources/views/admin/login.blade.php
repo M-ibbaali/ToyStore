@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Beauty House</title>
+    <title>Admin Login - Toy Store</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-beauty-bg min-h-screen flex items-center justify-center">
+<body class="bg-toys-bg min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md">
         <div class="bg-white rounded-2xl shadow-xl p-8">
             <!-- Logo/Header -->
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-beauty-btn mb-2">🌸 Beauty House</h1>
+                <div class="h-20 flex items-center px-8 border-b border-gray-800">
+             <div class="flex items-center gap-3">
+                 <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-yellow-400 to-blue-600 bg-clip-text text-transparent">Toystore</h1>
+             </div>
+        </div>
                 <p class="text-gray-600">Admin Panel Login</p>
             </div>
 
@@ -61,7 +65,7 @@
                 <!-- Remember Me -->
                 <div class="mb-6">
                     <label class="flex items-center">
-                        <input type="checkbox" name="remember" class="rounded border-gray-300 text-beauty-btn focus:ring-primary">
+                        <input type="checkbox" name="remember" class="rounded border-gray-300 text-toys-btn focus:ring-primary">
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
                 </div>
@@ -69,7 +73,7 @@
                 <!-- Submit Button -->
                 <button 
                     type="submit" 
-                    class="w-full bg-beauty-btn text-white py-3 rounded-lg font-semibold hover:bg-secondary transition shadow-md hover:shadow-lg"
+                    class="w-full bg-toys-btn text-white py-3 rounded-lg font-semibold hover:bg-secondary transition shadow-md hover:shadow-lg"
                 >
                     Login to Admin Panel
                 </button>
@@ -77,7 +81,7 @@
 
             <!-- Back to Site -->
             <div class="mt-6 text-center">
-                <a href="{{ route('home') }}" class="text-sm text-gray-600 hover:text-beauty-btn transition">
+                <a href="{{ route('home') }}" class="text-sm text-gray-600 hover:text-toys-btn transition">
                     ← Back to Main Site
                 </a>
             </div>

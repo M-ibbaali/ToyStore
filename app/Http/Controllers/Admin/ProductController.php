@@ -31,6 +31,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'original_price' => 'nullable|numeric|min:0|gte:price',
             'stock' => 'required|integer|min:0',
             'status' => 'required|in:active,inactive',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
@@ -39,32 +40,39 @@ class ProductController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
 
-        $product = Product::create($validated);
+        return \Illuminate\Support\Facades\DB::transaction(function() use ($validated, $request) {
+            $product = Product::create($validated);
+            $hasPrimary = false;
 
-        // Handle file uploads
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $path
-                ]);
-            }
-        }
-
-        // Handle image URLs
-        if ($request->has('image_urls')) {
-            foreach ($request->image_urls as $url) {
-                if ($url) {
+            // Handle file uploads
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image' => $url
+                        'image' => $path,
+                        'is_primary' => !$hasPrimary
                     ]);
+                    $hasPrimary = true;
                 }
             }
-        }
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
+            // Handle image URLs
+            if ($request->has('image_urls')) {
+                foreach ($request->image_urls as $url) {
+                    if ($url) {
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image' => $url,
+                            'is_primary' => !$hasPrimary
+                        ]);
+                        $hasPrimary = true;
+                    }
+                }
+            }
+
+            return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
+        });
     }
 
     public function edit(Product $product)
@@ -80,6 +88,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'original_price' => 'nullable|numeric|min:0|gte:price',
             'stock' => 'required|integer|min:0',
             'status' => 'required|in:active,inactive',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
@@ -88,39 +97,55 @@ class ProductController extends Controller
 
         $validated['slug'] = Str::slug($validated['name']);
 
-        $product->update($validated);
+        return \Illuminate\Support\Facades\DB::transaction(function() use ($validated, $request, $product) {
+            $product->update($validated);
+            $hasPrimary = $product->images()->where('is_primary', true)->exists();
 
-        // Handle new file uploads
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $path
-                ]);
-            }
-        }
-
-        // Handle new image URLs
-        if ($request->has('image_urls')) {
-            foreach ($request->image_urls as $url) {
-                if ($url) {
+            // Handle new file uploads
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image' => $url
+                        'image' => $path,
+                        'is_primary' => !$hasPrimary
                     ]);
+                    $hasPrimary = true;
                 }
             }
-        }
 
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+            // Handle new image URLs
+            if ($request->has('image_urls')) {
+                foreach ($request->image_urls as $url) {
+                    if ($url) {
+                        // Check if URL already exists for this product to avoid duplicates
+                        $exists = ProductImage::where('product_id', $product->id)
+                            ->where('image', $url)
+                            ->exists();
+                        
+                        if (!$exists) {
+                            ProductImage::create([
+                                'product_id' => $product->id,
+                                'image' => $url,
+                                'is_primary' => !$hasPrimary
+                            ]);
+                            $hasPrimary = true;
+                        }
+                    }
+                }
+            }
+
+            return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+        });
     }
 
     public function destroy(Product $product)
     {
         // Delete associated images
         foreach ($product->images as $image) {
-            Storage::disk('public')->delete($image->image);
+            if (!str_starts_with($image->image, 'http')) {
+                Storage::disk('public')->delete($image->image);
+            }
             $image->delete();
         }
 
@@ -131,7 +156,9 @@ class ProductController extends Controller
     public function deleteImage($id)
     {
         $image = ProductImage::findOrFail($id);
-        Storage::disk('public')->delete($image->image);
+        if (!str_starts_with($image->image, 'http')) {
+            Storage::disk('public')->delete($image->image);
+        }
         $image->delete();
 
         return back()->with('success', 'Image deleted successfully!');

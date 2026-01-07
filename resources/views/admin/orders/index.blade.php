@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-    <h1 class="text-3xl font-bold text-beauty-text">Orders</h1>
+    <h1 class="text-3xl font-bold text-toys-text">Orders</h1>
     
     <div class="flex items-center gap-2">
         <form method="GET" action="{{ route('admin.orders.index') }}" class="flex items-center gap-2">
@@ -44,7 +44,7 @@
             <tr>
                 <td class="px-6 py-4 font-medium">#{{ $order->id }}</td>
                 <td class="px-6 py-4">{{ $order->user->name }}</td>
-                <td class="px-6 py-4">${{ number_format($order->total, 2) }}</td>
+                <td class="px-6 py-4">{{ formatPrice($order->total) }}</td>
                 <td class="px-6 py-4">
                     <span class="text-xs">{{ strtoupper($order->payment_method) }}</span>
                 </td>

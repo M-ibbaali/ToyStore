@@ -3,7 +3,7 @@
 @section('title', 'Add Category')
 
 @section('content')
-<h1 class="text-3xl font-bold text-beauty-text mb-6">Add New Category</h1>
+<h1 class="text-3xl font-bold text-toys-text mb-6">Add New Category</h1>
 
 @if($errors->any())
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -31,7 +31,7 @@
     </div>
     
     <div class="mt-6 flex gap-4">
-        <button type="submit" class="px-6 py-2 bg-beauty-btn text-white rounded-lg hover:bg-secondary transition">
+        <button type="submit" class="px-6 py-2 bg-toys-btn text-white rounded-lg hover:bg-secondary transition">
             Create Category
         </button>
         <a href="{{ route('admin.categories.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">

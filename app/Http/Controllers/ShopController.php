@@ -11,13 +11,24 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         // Select only necessary columns and eager load relationships
-        $query = Product::select('id', 'name', 'slug', 'price', 'stock', 'category_id', 'status', 'description')
+        $query = Product::select('id', 'name', 'slug', 'price', 'original_price', 'stock', 'category_id', 'status', 'description')
             ->where('status', 'active')
+            ->inStock()
             ->with(['images', 'category:id,name']); // Optimize relationship loading
 
-        // Category filter
+
+        // Category Filter (Single)
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
+        }
+
+        // Multi-Category filter
+        if ($request->filled('categories')) {
+            $categories = is_array($request->categories) ? $request->categories : [$request->categories];
+            $categories = array_filter($categories); // Remove empty values
+            if (!empty($categories)) {
+                $query->whereIn('category_id', $categories);
+            }
         }
 
         // Search
@@ -64,24 +75,39 @@ class ShopController extends Controller
             return Category::select('id', 'name')->get();
         });
 
-        return view('frontend.shop', compact('products', 'categories'));
+        // Dynamic Min/Max Prices for Filter UI
+        $minGlobalPrice = \Illuminate\Support\Facades\Cache::remember('min_global_price', 60, function () {
+            return floor(Product::where('status', 'active')->inStock()->min('price') ?? 0);
+        });
+        $maxGlobalPrice = \Illuminate\Support\Facades\Cache::remember('max_global_price', 60, function () {
+            return ceil(Product::where('status', 'active')->inStock()->max('price') ?? 1000);
+        });
+
+        return view('frontend.shop', compact('products', 'categories', 'minGlobalPrice', 'maxGlobalPrice'));
     }
 
     public function show($slug)
     {
         $product = Product::where('slug', $slug)
             ->where('status', 'active')
+            ->inStock()
             ->with(['images', 'category', 'promotion'])
             ->firstOrFail();
 
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('status', 'active')
+            ->inStock()
             ->with('images') // Optimization: select specific columns if needed
             ->take(4)
             ->get();
 
-        return view('frontend.product', compact('product', 'relatedProducts'));
+        // Cache categories for performance (60 minutes) - same as index
+        $categories = \Illuminate\Support\Facades\Cache::remember('shop_categories', 60, function () {
+            return Category::select('id', 'name')->get();
+        });
+
+        return view('frontend.product', compact('product', 'relatedProducts', 'categories'));
     }
 
     public function suggestions(Request $request)
@@ -89,7 +115,8 @@ class ShopController extends Controller
         $query = $request->get('query');
         
         $productsQuery = Product::select('id', 'name', 'slug', 'price') // Select only what's needed
-            ->where('status', 'active');
+            ->where('status', 'active')
+            ->inStock();
 
         if ($query && strlen($query) >= 2) {
             $productsQuery->where('name', 'like', "%{$query}%");

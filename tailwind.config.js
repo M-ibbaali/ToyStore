@@ -1,26 +1,29 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
+import defaultTheme from "tailwindcss/defaultTheme";
+import forms from "@tailwindcss/forms";
 
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
+        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
+        "./storage/framework/views/*.php",
+        "./resources/views/**/*.blade.php",
     ],
 
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ["Nunito", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                primary: '#F8BBD0',   // Soft Pink
-                secondary: '#F06292', // Rose Pink
-                'beauty-bg': '#FFF7FB', // Very Light Pink
-                'beauty-text': '#2E2E2E', // Dark Gray
-                'beauty-btn': '#E91E63', // Beauty Pink
-            }
+                primary: "#FFD700", // Bright Yellow
+                secondary: "#1E90FF", // Bright Blue
+                "toys-bg": "#FFFDE7", // Very Light Yellow
+                "toys-text": "#102A43", // Deep Blue
+                "toys-btn": "#1E90FF", // Blue Button
+                "toy-yellow": "#FFD700",
+                "toy-blue": "#1E90FF",
+                "toy-red": "#FF5252",
+            },
         },
     },
 

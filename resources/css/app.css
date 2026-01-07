@@ -12,21 +12,21 @@ body::-webkit-scrollbar {
 ::-webkit-scrollbar-track,
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track {
-    background: #fdf2f8; /* pink-50 */
+    background: #FFFDE7; /* Light Yellow */
 }
 
 ::-webkit-scrollbar-thumb,
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb {
-    background: #ec4899; /* pink-500 */
+    background: #1E90FF; /* Blue */
     border-radius: 6px;
-    border: 3px solid #fdf2f8; /* Creates a nicer floating effect */
+    border: 3px solid #FFFDE7;
 }
 
 ::-webkit-scrollbar-thumb:hover,
 html::-webkit-scrollbar-thumb:hover,
 body::-webkit-scrollbar-thumb:hover {
-    background: #db2777; /* pink-600 */
+    background: #FFD700; /* Yellow on hover */
 }
 
 @layer utilities {

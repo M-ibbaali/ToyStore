@@ -13,13 +13,13 @@ class DemoDataSeeder extends Seeder
     {
         // 1. Create Categories
         $categories = [
-            ['name' => 'Makeup', 'slug' => 'makeup', 'description' => 'Face, Eyes, Lips, and more.'],
-            ['name' => 'Skincare', 'slug' => 'skincare', 'description' => 'Cleansers, Toners, Serums, and more.'],
-            ['name' => 'Hair Care', 'slug' => 'hair-care', 'description' => 'Shampoo, Conditioner, Treatments.'],
-            ['name' => 'Fragrance', 'slug' => 'fragrance', 'description' => 'Perfumes and Body Mists.'],
-            ['name' => 'Body Care', 'slug' => 'body-care', 'description' => 'Lotions, Scrubs, and Shower Gels.'],
-            ['name' => 'Beauty Tools', 'slug' => 'beauty-tools', 'description' => 'Brushes, Sponges, and Tools.'],
-            ['name' => 'Offers & Promotions', 'slug' => 'offers', 'description' => 'Best sellers and discounts.'],
+            ['name' => 'Jeux de construction', 'slug' => 'construction', 'description' => 'Blocs, Lego, et autres jeux pour développer la créativité.'],
+            ['name' => 'Jeux d\'extérieur, sport et loisirs', 'slug' => 'outdoor', 'description' => 'Ballons, cerfs-volants et activités en plein air.'],
+            ['name' => 'Jeux de société et famille', 'slug' => 'board-games', 'description' => 'Jeux de plateau et jeux de cartes pour tous les âges.'],
+            ['name' => 'Jouets d\'éveil et 1er âge', 'slug' => 'baby-toys', 'description' => 'Jouets pour bébés et tout-petits pour stimuler les sens.'],
+            ['name' => 'Déguisements et costumes', 'slug' => 'costumes', 'description' => 'Costumes et accessoires pour le jeu de rôle et le carnaval.'],
+            ['name' => 'Jeux éducatifs et scientifiques', 'slug' => 'educational', 'description' => 'Kits éducatifs, puzzles et activités scientifiques.'],
+            ['name' => 'Offres & Promotions', 'slug' => 'offers', 'description' => 'Meilleures ventes, promotions et réductions spéciales.'],
         ];
 
         foreach ($categories as $cat) {
@@ -60,44 +60,56 @@ class DemoDataSeeder extends Seeder
         $catIds = DB::table('categories')->pluck('id', 'slug');
 
         $products = [
-            // Makeup
-            ['category_id' => $catIds['makeup'], 'name' => 'Velvet Matte Lipstick', 'slug' => 'velvet-matte-lipstick', 'price' => 25.00, 'stock' => 100, 'description' => 'Long-lasting matte lipstick in rose red.'],
-            ['category_id' => $catIds['makeup'], 'name' => 'Liquid Foundation', 'slug' => 'liquid-foundation', 'price' => 35.00, 'stock' => 50, 'description' => 'Full coverage foundation for all skin tones.'],
-            ['category_id' => $catIds['makeup'], 'name' => 'Volumizing Mascara', 'slug' => 'volumizing-mascara', 'price' => 18.00, 'stock' => 80, 'description' => 'Blackest black mascara for dramatic lashes.'],
-            ['category_id' => $catIds['makeup'], 'name' => 'Rose Blush Palette', 'slug' => 'rose-blush-palette', 'price' => 28.00, 'stock' => 40, 'description' => 'Three shades of pink for a natural glow.'],
-            ['category_id' => $catIds['makeup'], 'name' => 'Eyeliner Pen', 'slug' => 'eyeliner-pen', 'price' => 15.00, 'stock' => 120, 'description' => 'Waterproof liquid eyeliner with precision tip.'],
-            
-            // Skincare
-            ['category_id' => $catIds['skincare'], 'name' => 'Hydrating Face Cream', 'slug' => 'hydrating-face-cream', 'price' => 45.00, 'stock' => 60, 'description' => 'Deeply moisturizing cream with hyaluronic acid.'],
-            ['category_id' => $catIds['skincare'], 'name' => 'Vitamin C Serum', 'slug' => 'vitamin-c-serum', 'price' => 38.00, 'stock' => 70, 'description' => 'Brightening serum for radiant skin.'],
-            ['category_id' => $catIds['skincare'], 'name' => 'Gentle Foam Cleanser', 'slug' => 'gentle-foam-cleanser', 'price' => 22.00, 'stock' => 90, 'description' => 'Removes impurities without drying skin.'],
-            ['category_id' => $catIds['skincare'], 'name' => 'Rose Water Toner', 'slug' => 'rose-water-toner', 'price' => 20.00, 'stock' => 85, 'description' => 'Soothing toner with real rose petals.'],
-            ['category_id' => $catIds['skincare'], 'name' => 'Clay Face Mask', 'slug' => 'clay-face-mask', 'price' => 30.00, 'stock' => 45, 'description' => 'Detoxifying mask for pore cleansing.'],
-
-            // Hair Care
-            ['category_id' => $catIds['hair-care'], 'name' => 'Argan Oil Shampoo', 'slug' => 'argan-oil-shampoo', 'price' => 18.00, 'stock' => 100, 'description' => 'Nourishing shampoo for dry hair.'],
-            ['category_id' => $catIds['hair-care'], 'name' => 'Keratin Conditioner', 'slug' => 'keratin-conditioner', 'price' => 18.00, 'stock' => 100, 'description' => 'Smooths and strengthens hair.'],
-            ['category_id' => $catIds['hair-care'], 'name' => 'Hair Repair Mask', 'slug' => 'hair-repair-mask', 'price' => 25.00, 'stock' => 50, 'description' => 'Intensive treatment for damaged hair.'],
-
-            // Fragrance
-            ['category_id' => $catIds['fragrance'], 'name' => 'Flora Eau de Parfum', 'slug' => 'flora-eau-de-parfum', 'price' => 85.00, 'stock' => 30, 'description' => 'Floral scent with notes of jasmine and rose.'],
-            ['category_id' => $catIds['fragrance'], 'name' => 'Vanilla Body Mist', 'slug' => 'vanilla-body-mist', 'price' => 15.00, 'stock' => 150, 'description' => 'Sweet and warm vanilla fragrance.'],
-
-            // Body Care
-            ['category_id' => $catIds['body-care'], 'name' => 'Shea Butter Lotion', 'slug' => 'shea-butter-lotion', 'price' => 12.00, 'stock' => 200, 'description' => 'Daily moisturizer for soft skin.'],
-            ['category_id' => $catIds['body-care'], 'name' => 'Coffee Body Scrub', 'slug' => 'coffee-body-scrub', 'price' => 20.00, 'stock' => 60, 'description' => 'Exfoliating scrub for smooth skin.'],
-
-            // Beauty Tools
-            ['category_id' => $catIds['beauty-tools'], 'name' => 'Makeup Brush Set', 'slug' => 'makeup-brush-set', 'price' => 35.00, 'stock' => 40, 'description' => '10-piece professional brush set.'],
-            ['category_id' => $catIds['beauty-tools'], 'name' => 'Beauty Sponge', 'slug' => 'beauty-sponge', 'price' => 8.00, 'stock' => 300, 'description' => 'Soft sponge for flawless blending.'],
-            ['category_id' => $catIds['beauty-tools'], 'name' => 'LED Mirror', 'slug' => 'led-mirror', 'price' => 50.00, 'stock' => 20, 'description' => 'Lighted vanity mirror for makeup application.'],
+            // Jeux de construction
+            ['category_id' => $catIds['construction'], 'name' => 'Bloc de Construction Magnétique', 'slug' => 'bloc-construction-magnetique', 'price' => 30.00, 'stock' => 100, 'description' => 'Blocs magnétiques pour construire des formes créatives.'],
+            ['category_id' => $catIds['construction'], 'name' => 'Lego Classic', 'slug' => 'lego-classic', 'price' => 45.00, 'stock' => 80, 'description' => 'Boîte de briques LEGO pour stimuler l’imagination.'],
+        
+            // Jeux d'extérieur, sport et loisirs
+            ['category_id' => $catIds['outdoor'], 'name' => 'Ballon de Football', 'slug' => 'ballon-football', 'price' => 15.00, 'stock' => 150, 'description' => 'Ballon de football taille standard pour enfants.'],
+            ['category_id' => $catIds['outdoor'], 'name' => 'Cerf-volant Coloré', 'slug' => 'cerf-volant-colore', 'price' => 20.00, 'stock' => 50, 'description' => 'Cerf-volant facile à voler pour les sorties en plein air.'],
+        
+            // Jeux de société et famille
+            ['category_id' => $catIds['board-games'], 'name' => 'Monopoly Junior', 'slug' => 'monopoly-junior', 'price' => 35.00, 'stock' => 60, 'description' => 'Version simplifiée du Monopoly pour enfants.'],
+            ['category_id' => $catIds['board-games'], 'name' => 'Dobble', 'slug' => 'dobble', 'price' => 18.00, 'stock' => 100, 'description' => 'Jeu de cartes pour développer l’observation et la rapidité.'],
+        
+            // Jouets d'éveil et 1er âge
+            ['category_id' => $catIds['baby-toys'], 'name' => 'Hochet Bébé', 'slug' => 'hochet-bebe', 'price' => 10.00, 'stock' => 120, 'description' => 'Hochet coloré pour stimuler les sens du bébé.'],
+            ['category_id' => $catIds['baby-toys'], 'name' => 'Tapis d’Éveil', 'slug' => 'tapis-eveil', 'price' => 40.00, 'stock' => 50, 'description' => 'Tapis interactif pour le développement moteur et visuel.'],
+        
+            // Déguisements et costumes
+            ['category_id' => $catIds['costumes'], 'name' => 'Déguisement Pirate', 'slug' => 'deguisement-pirate', 'price' => 25.00, 'stock' => 30, 'description' => 'Costume complet de pirate pour jouer et s’amuser.'],
+            ['category_id' => $catIds['costumes'], 'name' => 'Déguisement Princesse', 'slug' => 'deguisement-princesse', 'price' => 30.00, 'stock' => 40, 'description' => 'Robe et accessoires pour un jeu de rôle féérique.'],
+        
+            // Jeux éducatifs et scientifiques
+            ['category_id' => $catIds['educational'], 'name' => 'Kit Science pour Enfants', 'slug' => 'kit-science-enfants', 'price' => 35.00, 'stock' => 70, 'description' => 'Expériences simples pour découvrir la science.'],
+            ['category_id' => $catIds['educational'], 'name' => 'Puzzle Alphabet', 'slug' => 'puzzle-alphabet', 'price' => 15.00, 'stock' => 80, 'description' => 'Puzzle éducatif pour apprendre les lettres en s’amusant.'],
         ];
+        
 
         foreach ($products as $product) {
-            DB::table('products')->insert(array_merge($product, [
+            $productId = DB::table('products')->insertGetId(array_merge($product, [
                 'status' => 'active',
                 'created_at' => now(), 'updated_at' => now()
             ]));
+
+            // Add demo image
+            $toyImages = [
+                'https://images.unsplash.com/photo-1558060370-d644479cb6f7?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1531323380165-66811795e0df?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1566576721346-d4a3b4eaad5b?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1545558014-8692077e9b5c?q=80&w=800&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1599623560574-39d485900c95?q=80&w=800&auto=format&fit=crop',
+            ];
+
+            DB::table('product_images')->insert([
+                'product_id' => $productId,
+                'image' => $toyImages[array_rand($toyImages)],
+                'is_primary' => true,
+                'created_at' => now(), 'updated_at' => now()
+            ]);
         }
     }
 }

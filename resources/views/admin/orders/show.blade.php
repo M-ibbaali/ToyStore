@@ -7,7 +7,7 @@
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
     <div>
         <div class="flex items-center gap-3 mb-1">
-            <a href="{{ route('admin.orders.index') }}" class="p-2 bg-white rounded-full text-gray-500 hover:text-pink-600 hover:bg-pink-50 transition shadow-sm border border-gray-100">
+            <a href="{{ route('admin.orders.index') }}" class="p-2 bg-white rounded-full text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm border border-gray-100">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </a>
             <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Order #{{ $order->id }}</h1>
@@ -24,7 +24,7 @@
                 Delete Order
             </button>
         </form>
-        <button onclick="window.print()" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:text-pink-600 hover:border-pink-200 transition shadow-sm flex items-center gap-2">
+        <button onclick="window.print()" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:text-blue-600 hover:border-blue-200 transition shadow-sm flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             Print Invoice
         </button>
@@ -44,7 +44,7 @@
                 @forelse($order->items as $item)
                 <a href="{{ route('admin.products.edit', $item->product) }}" class="block text-inherit group">
                     <div class="p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:bg-gray-50 transition duration-150">
-                        <div class="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 group-hover:border-pink-200 transition">
+                        <div class="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 group-hover:border-blue-200 transition">
                              @php
                                 $productImage = $item->product->images->first();
                                 $imageSrc = $productImage ? (str_starts_with($productImage->image, 'http') ? $productImage->image : asset('storage/' . $productImage->image)) : 'https://via.placeholder.com/150';
@@ -52,14 +52,14 @@
                              <img src="{{ $imageSrc }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1 text-center sm:text-left">
-                            <h3 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-pink-600 transition">{{ $item->product->name }}</h3>
-                            <p class="text-sm text-gray-500 mb-2">Unit Price: ${{ number_format($item->price, 2) }}</p>
+                            <h3 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-600 transition">{{ $item->product->name }}</h3>
+                            <p class="text-sm text-gray-500 mb-2">Unit Price: {{ formatPrice($item->price) }}</p>
                             <div class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
                                 Qty: {{ $item->quantity }}
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-lg font-bold text-gray-900">${{ number_format($item->price * $item->quantity, 2) }}</p>
+                            <p class="text-lg font-bold text-gray-900">{{ formatPrice($item->price * $item->quantity) }}</p>
                         </div>
                     </div>
                 </a>
@@ -75,7 +75,7 @@
                 <div class="flex flex-col gap-3">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Subtotal</span>
-                        <span class="font-medium text-gray-900">${{ number_format($order->total, 2) }}</span>
+                        <span class="font-medium text-gray-900">{{ formatPrice($order->total) }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Shipping</span>
@@ -84,7 +84,7 @@
                     <div class="border-t border-gray-200 my-2"></div>
                     <div class="flex justify-between items-center text-xl font-extrabold text-gray-900">
                         <span>Total</span>
-                        <span class="text-pink-600">${{ number_format($order->total, 2) }}</span>
+                        <span class="text-green-600">{{ formatPrice($order->total) }}</span>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                     @method('PATCH')
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Current Status</label>
-                        <select name="status" class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-pink-500 focus:ring focus:ring-pink-200 transition">
+                        <select name="status" class="block w-full rounded-xl border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 transition">
                             <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
                             <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
@@ -112,7 +112,7 @@
                             <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>
                     </div>
-                    <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold rounded-xl shadow-lg shadow-pink-500/30 transition transform hover:-translate-y-0.5">
+                    <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5">
                         Update Order Status
                     </button>
                 </form>

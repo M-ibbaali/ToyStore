@@ -21,7 +21,7 @@ class HomeController extends Controller
         
         $categories = Category::all();
         foreach($categories as $category) {
-             $category->setRelation('products', $category->products()->where('status', 'active')->with('images')->latest()->take(4)->get());
+             $category->setRelation('products', $category->products()->where('status', 'active')->inStock()->with('images')->latest()->take(4)->get());
         }
 
         // Collect all products for the JS Quick View
