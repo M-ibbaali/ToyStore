@@ -8,32 +8,39 @@ class AdminNotificationComposer
 {
     public function compose(View $view)
     {
+        // Fetch real database notifications for the logged-in admin
+        // We only get unread ones for the badge/dropdown initially, or maybe latest 10?
+        // User asked for "badge must always reflect real unread notifications count".
+        
         $user = auth()->user();
         
         if (!$user) {
             $view->with('adminNotifications', collect());
-            $view->with('adminUnreadCount', 0);
             return;
         }
 
-        // Get recent notifications (read and unread) for history
-        $dbNotifications = $user->notifications()->latest()->take(10)->get();
+        // Get unread notifications for badge count and dropdown display
+        // We format them to match the view's expected structure
+        $dbNotifications = $user->unreadNotifications()->latest()->take(10)->get();
         
         $notifications = $dbNotifications->map(function ($note) {
             return [
                 'id' => $note->id,
-                'read_at' => $note->read_at,
                 'type' => $note->data['type'] ?? 'info',
                 'icon' => $note->data['icon'] ?? 'bell',
                 'color' => $note->data['color'] ?? 'bg-gray-100 text-gray-600',
                 'title' => $note->data['title'] ?? 'Notification',
                 'description' => $note->data['description'] ?? '',
                 'time' => $note->created_at,
+                'url' => route('admin.notifications.index'), // Link to full list or specific action? User might prefer list to mark read. 
+                // Actually, let's link to the action IF provided, but maybe passing through a "mark read" route?
+                // For now, link to action URL directly.
                 'action_url' => $note->data['url'] ?? '#',
             ];
         });
 
-        // Global unread count for badge
+        // Pass the COLLECTION of formatted notifications
+        // We also need the count of ALL unread, not just the taken 10
         $unreadCount = $user->unreadNotifications()->count();
 
         $view->with('adminNotifications', $notifications);
