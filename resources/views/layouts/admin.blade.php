@@ -148,10 +148,6 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                                             @elseif($notification['type'] === 'order')
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                                            @elseif($notification['type'] === 'message')
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                            @elseif($notification['type'] === 'user')
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                                             @else
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                                             @endif
@@ -159,40 +155,80 @@
 
                                         <!-- Content -->
                                         <div class="flex-1 min-w-0">
-                                            <div class="flex items-center justify-between mb-0.5">
-                                                <h4 class="text-sm font-bold text-gray-900 truncate pr-2 group-hover:text-blue-600 transition-colors">{{ $notification['title'] }}</h4>
-                                                <span class="text-[10px] text-gray-400 font-medium whitespace-nowrap">{{ $notification['time']->diffForHumans(null, true, true) }}</span>
-                                            </div>
-                                            <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">{{ $notification['description'] }}</p>
+                                            <p class="text-sm font-bold text-gray-900 truncate">{{ $notification['title'] }}</p>
+                                            <p class="text-xs text-gray-400 mt-0.5 truncate">{{ $notification['description'] }}</p>
                                         </div>
-                                        
-                                        <!-- Read Indicator -->
-                                        @if(is_null($notification['read_at']))
-                                            <div class="bg-blue-500 w-1.5 h-1.5 rounded-full self-center"></div>
-                                        @endif
+
+                                        <!-- Actions -->
+                                        <div class="flex flex-col items-end gap-1">
+                                            <span class="text-[10px] font-bold text-gray-300 whitespace-nowrap">{{ $notification['time']->diffForHumans(null, true, true) }}</span>
+
+                                            <!-- Delete Button -->
+                                            <button @click.prevent="deleteNotification('{{ $notification['id'] }}', $el.closest('a'))" 
+                                                    class="p-1 rounded-md text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                                    title="Dismiss">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </a>
                             @empty
                                 <div class="p-8 text-center">
-                                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                    <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                                     </div>
-                                    <p class="text-sm font-bold text-gray-900">All caught up!</p>
-                                    <p class="text-xs text-gray-500 mt-1">No new notifications at the moment.</p>
+                                    <p class="text-sm font-bold text-gray-900">All clear!</p>
+                                    <p class="text-xs text-gray-400 mt-1">No actionable alerts at the moment.</p>
                                 </div>
                             @endforelse
                         </div>
-                        
+
                         <!-- Footer -->
-                        <div class="p-2 bg-gray-50 border-t border-gray-100 text-center">
-                            <form action="{{ route('admin.notifications.clearAll') }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-xs font-black text-gray-400 hover:text-red-600 uppercase tracking-widest transition-colors block w-full py-2">Clear All Notifications</button>
-                            </form>
+                        @if(collect($adminNotifications)->count() > 0)
+                        <div class="p-4 bg-gray-50 border-t border-gray-100 text-center">
+                            <a href="{{ route('admin.notifications.index') }}" class="text-xs font-black text-blue-600 hover:text-blue-700 uppercase tracking-wide hover:underline">View All Alerts</a>
                         </div>
+                        @endif
                     </div>
                 </div>
+
+                <script>
+                    async function deleteNotification(id, element) {
+                        if(!id) return;
+                        
+                        // Animate removal
+                        element.style.transform = 'translate(10px, 0)';
+                        element.style.opacity = '0';
+                        
+                        try {
+                            const response = await fetch(`/toystore-admin/notifications/${id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            
+                            const data = await response.json();
+                            
+                            if (response.ok) {
+                                setTimeout(() => {
+                                    element.remove();
+                                    // Optional: Refresh global unread count logic if needed
+                                }, 300);
+                            } else {
+                                // Revert visual if failed
+                                element.style.transform = 'none';
+                                element.style.opacity = '1';
+                            }
+                        } catch (e) {
+                            console.error('Failed to delete notification', e);
+                            element.style.transform = 'none';
+                            element.style.opacity = '1';
+                        }
+                    }
+                </script>
 
                 <!-- Admin Profile Short -->
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-100">
