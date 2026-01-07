@@ -209,48 +209,8 @@
         
         <!-- Content Area -->
         <div class="flex-1 overflow-y-auto bg-gray-50 p-8">
-            <!-- Toast Notification Container -->
-            <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none">
-                <!-- Toast items will be injected here with javascript, make sure enable pointer-events -->
-                @if(session('success'))
-                    <div class="bg-white border-l-4 border-green-500 text-gray-700 p-4 rounded-lg shadow-xl flex items-center gap-3 transform transition-all duration-500 animate-slide-in-right pointer-events-auto min-w-[300px]" role="alert">
-                        <div class="p-2 bg-green-100 rounded-full text-green-600">
-                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-sm">Success</p>
-                            <p class="text-sm opacity-90">{{ session('success') }}</p>
-                        </div>
-                        <button onclick="this.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600 focus:outline-none">&times;</button>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="bg-white border-l-4 border-red-500 text-gray-700 p-4 rounded-lg shadow-xl flex items-center gap-3 transform transition-all duration-500 animate-slide-in-right pointer-events-auto min-w-[300px]" role="alert">
-                         <div class="p-2 bg-red-100 rounded-full text-red-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="font-bold text-sm">Error</p>
-                            <p class="text-sm opacity-90">{{ session('error') }}</p>
-                        </div>
-                        <button onclick="this.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-600 focus:outline-none">&times;</button>
-                    </div>
-                @endif
-            </div>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    const toasts = document.querySelectorAll('#toast-container > div');
-                    toasts.forEach(toast => {
-                        setTimeout(() => {
-                            toast.style.opacity = '0';
-                            toast.style.transform = 'translate(100%, 0)';
-                            setTimeout(() => toast.remove(), 500); 
-                        }, 5000);
-                    });
-                });
-            </script>
+            <!-- Alert Component -->
+            <x-admin.alert />
 
             @yield('content')
         </div>

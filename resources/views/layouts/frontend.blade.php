@@ -343,8 +343,8 @@
                             </div>
                         @else
                         <div class="flex items-center space-x-2">
-                            <a href="{{ route('login') }}" class="text-sm font-medium transition-colors duration-300 hover:opacity-75" id="header-login">Sign In</a>
-                            <a href="{{ route('register') }}" class="text-sm font-medium transition-colors duration-300 hover:opacity-75" id="header-login">/ Register</a>
+                            <a href="{{ route('login') }}" class="text-sm font-medium transition-colors duration-300 hover:opacity-75 text-black" id="header-login">Sign In</a>
+                            <a href="{{ route('register') }}" class="text-sm font-medium transition-colors duration-300 hover:opacity-75 text-black" id="header-login">/ Register</a>
                         </div>
                         @endif
                     </div>

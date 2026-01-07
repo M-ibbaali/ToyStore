@@ -106,6 +106,7 @@ Route::middleware(['auth', 'admin'])->prefix('toystore-admin')->name('admin.')->
 
     // Notifications
     Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/update-stock', [AdminNotificationController::class, 'updateStock'])->name('notifications.updateStock');
     Route::delete('/notifications/clear-all', [AdminNotificationController::class, 'clearAll'])->name('notifications.clearAll');
     Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
 

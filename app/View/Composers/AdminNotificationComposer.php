@@ -19,9 +19,13 @@ class AdminNotificationComposer
             return;
         }
 
-        // Get unread notifications for badge count and dropdown display
+        // Get latest actionable notifications (stock alerts and new orders)
         // We format them to match the view's expected structure
-        $dbNotifications = $user->unreadNotifications()->latest()->take(10)->get();
+        $dbNotifications = $user->notifications()
+            ->whereIn('data->type', ['stock', 'order'])
+            ->latest()
+            ->take(10)
+            ->get();
         
         $notifications = $dbNotifications->map(function ($note) {
             return [
@@ -32,9 +36,7 @@ class AdminNotificationComposer
                 'title' => $note->data['title'] ?? 'Notification',
                 'description' => $note->data['description'] ?? '',
                 'time' => $note->created_at,
-                'url' => route('admin.notifications.index'), // Link to full list or specific action? User might prefer list to mark read. 
-                // Actually, let's link to the action IF provided, but maybe passing through a "mark read" route?
-                // For now, link to action URL directly.
+                'read_at' => $note->read_at, // Include read_at timestamp
                 'action_url' => $note->data['url'] ?? '#',
             ];
         });

@@ -27,5 +27,14 @@ class AppServiceProvider extends ServiceProvider
             \Illuminate\Auth\Events\Login::class,
             \App\Listeners\MergeCartAfterLogin::class
         );
+
+        // Register Observers
+        \App\Models\Order::observe(\App\Observers\OrderObserver::class);
+        \App\Models\Product::observe(\App\Observers\ProductObserver::class);
+        \App\Models\User::observe(\App\Observers\UserObserver::class);
+        \App\Models\ContactMessage::observe(\App\Observers\ContactMessageObserver::class);
+        
+        // Share notifications with admin layout
+        view()->composer('layouts.admin', \App\View\Composers\AdminNotificationComposer::class);
     }
 }
