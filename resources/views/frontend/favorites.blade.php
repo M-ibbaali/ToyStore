@@ -110,8 +110,6 @@ function removeFromWishlistGrid(productId, newCount) {
 }
 
 async function clearWishlist() {
-    if (!confirm('Are you sure you want to clear your entire wishlist?')) return;
-
     try {
         const response = await fetch('{{ route("favorites.clear") }}', {
             method: 'POST',
@@ -132,14 +130,10 @@ async function clearWishlist() {
                 setTimeout(() => {
                     showEmptyState();
                     
-                    // Update counters with animation
-                    const badges = document.querySelectorAll('#fav-badge');
-                    badges.forEach(badge => {
-                        badge.textContent = '0';
-                        badge.classList.add('hidden');
-                        badge.classList.add('animate-bounce-scale');
-                        setTimeout(() => badge.classList.remove('animate-bounce-scale'), 500);
-                    });
+                    // Update global badges via event
+                    window.dispatchEvent(new CustomEvent('wishlist:updated', { 
+                        detail: { count: 0 } 
+                    }));
 
                     const dropdownCount = document.getElementById('fav-dropdown-count');
                     if (dropdownCount) dropdownCount.textContent = '0 Items';

@@ -10,7 +10,7 @@
                 <img src="{{ $favProduct->image_url }}" class="w-full h-full object-cover">
             </div>
             <div class="flex-1 min-w-0">
-                <a href="{{ route('product.show', $favProduct->slug) }}" class="text-xs font-bold text-toys-text truncate block hover:text-primary transition uppercase">{{ $favProduct->name }}</a>
+                <a href="{{ route('product.show', $favProduct->slug) }}" class="text-xs font-bold text-toys-text truncate block hover:text-blue-500 transition uppercase">{{ $favProduct->name }}</a>
                 <p class="text-[10px] font-black text-primary">{{ formatPrice($favProduct->price) }}</p>
             </div>
             <!-- Supprimer Button -->

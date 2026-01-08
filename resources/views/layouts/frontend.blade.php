@@ -196,14 +196,12 @@
         <!-- Main Header -->
         <div id="header-border" class="border-b {{ $isHome ? 'border-transparent' : 'border-gray-200' }} transition-colors duration-300">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center py-4">
-                    <!-- Logo -->
-                    <div class="flex items-center">
-                        <a href="{{ route('home') }}" class="text-2xl font-black flex items-center transition-colors duration-300 group" id="header-logo">
-                            <span class="text-3xl mr-2 transform group-hover:rotate-12 transition text-primary">🧸</span>
-                            <span class="text-secondary drop-shadow-sm">ToyStore</span>
+                <div class="flex justify-between items-center py-2 sm:py-3">
+                        <a href="{{ route('home') }}" class="flex items-center transition-transform duration-300 hover:scale-105" id="header-logo">
+                            <img src="https://res.cloudinary.com/dcqigi8kc/image/upload/v1767872448/Gemini_Generated_Image_geo7n0geo7n0geo7-removebg-preview_aa9i2e.png" 
+                                 alt="ToyStore Logo" 
+                                 class="h-10 sm:h-14 w-auto object-contain">
                         </a>
-                    </div>
 
                     <!-- Search Bar (Desktop) -->
                     <!-- We might need to adjust search bar styling for transparent header -->
@@ -1024,6 +1022,51 @@
         }
     }
 
+    // Wishlist Event Listener for real-time UI updates
+    window.addEventListener('wishlist:updated', (event) => {
+        const count = event.detail.count;
+        const desktopBadge = document.getElementById('fav-badge');
+        const mobileBadge = document.getElementById('fav-badge-mobile');
+        const heartIcon = document.getElementById('header-fav-icon');
+
+        // Update Desktop Badge
+        if (desktopBadge) {
+            desktopBadge.innerText = count;
+            if (count > 0) {
+                desktopBadge.classList.remove('hidden');
+            } else {
+                desktopBadge.classList.add('hidden');
+            }
+        }
+
+        // Update Mobile Badge
+        if (mobileBadge) {
+            mobileBadge.innerText = count;
+            if (count > 0) {
+                mobileBadge.classList.remove('hidden');
+            } else {
+                mobileBadge.classList.add('hidden');
+            }
+        }
+
+        // Update Heart Icon Color
+        if (heartIcon) {
+            if (count > 0) {
+                heartIcon.setAttribute('fill', '#ef4444');
+                heartIcon.setAttribute('stroke', '#ef4444');
+            } else {
+                heartIcon.setAttribute('fill', 'none');
+                heartIcon.setAttribute('stroke', '#f92d2dff');
+            }
+            
+            // Add a little bounce animation
+            heartIcon.parentElement.classList.add('animate-bounce-scale');
+            setTimeout(() => {
+                heartIcon.parentElement.classList.remove('animate-bounce-scale');
+            }, 500);
+        }
+    });
+
     // Immediate Sticky Header Logic
     document.addEventListener('DOMContentLoaded', () => {
         const header = document.getElementById('main-header');
@@ -1145,9 +1188,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="mobile-menu-panel" class="absolute inset-y-0 right-0 w-[85%] max-w-sm bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
             <!-- Header -->
             <div class="flex items-center justify-between p-6 border-b border-gray-100">
-                <a href="{{ route('home') }}" class="text-xl font-black flex items-center gap-2">
-                    <span class="text-2xl transform hover:rotate-12 transition text-primary">🧸</span>
-                    <span class="text-secondary tracking-tight">ToyStore</span>
+                <a href="{{ route('home') }}" class="flex items-center">
+                    <img src="https://res.cloudinary.com/dcqigi8kc/image/upload/v1767872448/Gemini_Generated_Image_geo7n0geo7n0geo7-removebg-preview_aa9i2e.png" 
+                         alt="ToyStore Logo" 
+                         class="h-16 w-auto object-contain">
                 </a>
                 <button id="close-mobile-menu" class="p-2 text-gray-400 hover:text-gray-900 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1295,7 +1339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Footer -->
             <div class="p-6 bg-gray-50 border-t border-gray-100 italic text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                Happy Shopping! ✨
+                Happy Shopping! 
             </div>
         </div>
     </div>
